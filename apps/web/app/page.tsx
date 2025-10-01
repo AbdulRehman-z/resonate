@@ -1,7 +1,13 @@
 "use client";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import { api } from "@workspace/backend/_generated/api";
 import { Button } from "@workspace/ui/components/button";
-import { useMutation, useQuery } from "convex/react";
+import {
+  Authenticated,
+  Unauthenticated,
+  useMutation,
+  useQuery,
+} from "convex/react";
 
 export default function Page() {
   const users = useQuery(api.users.getMany);
@@ -9,13 +15,19 @@ export default function Page() {
 
   return (
     <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col items-center justify-center gap-4 max-w-sm">
-        <h1 className="text-2xl font-bold">Hello World/web</h1>
-        <Button size="sm" onClick={() => addUser()}>
-          Add user
-        </Button>
-        <p>{JSON.stringify(users, null, 2)}</p>
-      </div>
+      <Authenticated>
+        <div className="flex flex-col items-center justify-center gap-4 max-w-sm">
+          <h1 className="text-2xl font-bold">Hello World/web</h1>
+          <UserButton />
+          <Button size="sm" onClick={() => addUser()}>
+            Add user
+          </Button>
+          <p>{JSON.stringify(users, null, 2)}</p>
+        </div>
+      </Authenticated>
+      <Unauthenticated>
+        <SignInButton />
+      </Unauthenticated>
     </div>
   );
 }
